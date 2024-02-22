@@ -1,3 +1,24 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+# config/routes.yaml
+
+app:
+    path: /
+    controller: App\Controller\LivraisonController::index
+app_livreur_index:
+    path: /livreur
+    controller: App\Controller\LivreurController::index
+    methods: ['GET']
+app_livreur_new:
+    path: /livreur/new
+    controller: App\Controller\LivreurController::new
+app_livreur_show:
+    path: /livreur/{id}
+    controller: App\Controller\LivreurController::show
+    methods: ['GET']
+app_livreur_edit:
+    path: /livreur/{id}/edit
+    controller: App\Controller\LivreurController::edit
+    methods: ['GET', 'POST']
+app_livreur_delete:
+    path: /livreur/{id}
+    controller: App\Controller\LivreurController::delete
+    methods: ['POST']    

@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Livraison index{% endblock %}
+
+{% block body %}
+    <h1>Livraison index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date_livraison</th>
+                <th>Prix_livraison</th>
+                <th>Produit</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for livraison in livraisons %}
+            <tr>
+                <td>{{ livraison.id }}</td>
+                <td>{{ livraison.date_livraison ? livraison.date_livraison|date('Y-m-d') : '' }}</td>
+                <td>{{ livraison.prix_livraison }}</td>
+                <td>{{ livraison.produit }}</td>
+                <td>
+                    <a href="{{ path('app_livraison_show', {'id': livraison.id}) }}">Show</a>
+                    <a href="{{ path('app_livraison_edit', {'id': livraison.id}) }}">Edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">No records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_livraison_new') }}">Create new</a>
+{% endblock %}
