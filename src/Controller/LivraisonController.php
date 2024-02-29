@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controller;
 
 use App\Entity\Livraison;
@@ -23,24 +22,30 @@ class LivraisonController extends AbstractController
     }
 
     #[Route('/new', name: 'app_livraison_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $livraison = new Livraison();
-        $form = $this->createForm(LivraisonType::class, $livraison);
-        $form->handleRequest($request);
+public function new(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $livraison = new Livraison();
+    $form = $this->createForm(LivraisonType::class, $livraison);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Custom validation
+        if ($livraison->getDateLivraison() <= new \DateTime() || $livraison->getPrixLivraison() <= 0) {
+            $this->addFlash('error', 'The date must be superior to the present date and the price must be superior to zero.');
+        } else {
             $entityManager->persist($livraison);
             $entityManager->flush();
 
             return $this->redirectToRoute('app_livraison_index', [], Response::HTTP_SEE_OTHER);
         }
-
-        return $this->renderForm('livraison/new.html.twig', [
-            'livraison' => $livraison,
-            'form' => $form,
-        ]);
     }
+
+    return $this->renderForm('livraison/new.html.twig', [
+        'livraison' => $livraison,
+        'form' => $form,
+    ]);
+}
+
 
     #[Route('/{id}', name: 'app_livraison_show', methods: ['GET'])]
     public function show(Livraison $livraison): Response

@@ -23,32 +23,29 @@ class LivreurController extends AbstractController
     }
 
     #[Route('/new', name: 'app_Livreur_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $Livreur = new Livreur();
-        $form = $this->createForm(LivreurType::class, $Livreur);
-        $form->handleRequest($request);
+public function new(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $Livreur = new Livreur();
+    $form = $this->createForm(LivreurType::class, $Livreur);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+    if ($form->isSubmitted() && $form->isValid()) {
+        if ($Livreur->getAge() < 18 || strlen((string)$Livreur->getNumTel()) !== 8) {
+            $this->addFlash('error', 'The livreur must be at least 18 years old and the phone number must be 8 digits long.');
+        } else {
             $entityManager->persist($Livreur);
             $entityManager->flush();
 
             return $this->redirectToRoute('app_Livreur_index', [], Response::HTTP_SEE_OTHER);
         }
-
-        return $this->renderForm('Livreur/new.html.twig', [
-            'Livreur' => $Livreur,
-            'form' => $form,
-        ]);
     }
 
-    #[Route('/{id}', name: 'app_Livreur_show', methods: ['GET'])]
-    public function show(Livreur $id): Response
-    {
-        return $this->render('Livreur/show.html.twig', [
-            'Livreur' => $id,
-        ]);
-    }
+    return $this->renderForm('Livreur/new.html.twig', [
+        'Livreur' => $Livreur,
+        'form' => $form,
+    ]);
+}
+
 
     #[Route('/{id}/edit', name: 'app_Livreur_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Livreur $id, EntityManagerInterface $entityManager): Response
